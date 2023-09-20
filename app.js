@@ -3,48 +3,56 @@ const { MongoClient } = require("mongodb");
 const password = process.env.MONGODBATLAS_PASSWORD;
 const app = express();
 const port = 3000;
+const bodyParser = require("body-parser");
 
 app.use(express.json());
 
 // Define a route for the callback URL
-app.post("/webhook", (req, res) => {
-  // Handle the incoming callback data here
-  console.log("Received callback:", req.body);
+app.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (request, response) => {
+    let event;
 
-  async function run() {
-    const uri = `mongodb+srv://pyakhurelpasa:${password}@cluster0.dgcll78.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp`;
+    content = JSON.parse(request.body);
+    // Handle the incoming callback data here
+    console.log("Received callback:", request.body);
 
-    const client = new MongoClient(uri);
+    async function run() {
+      const uri = `mongodb+srv://pyakhurelpasa:${password}@cluster0.dgcll78.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp`;
 
-    await client.connect();
+      const client = new MongoClient(uri);
 
-    const dbName = "ucm-test";
-    const collectionName = "ContentInfo";
+      await client.connect();
 
-    // Create references to the database and collection in order to run
-    // operations on them.
-    const database = client.db(dbName);
-    const collection = database.collection(collectionName);
+      const dbName = "ucm-test";
+      const collectionName = "ContentInfo";
 
-    const recipes = [req.body];
+      // Create references to the database and collection in order to run
+      // operations on them.
+      const database = client.db(dbName);
+      const collection = database.collection(collectionName);
 
-    try {
-      const insertManyResult = await collection.insertMany(recipes);
-      console.log(
-        `${insertManyResult.insertedCount} documents successfully inserted.\n`
-      );
-    } catch (err) {
-      console.error(
-        `Something went wrong trying to insert the new documents: ${err}\n`
-      );
+      const recipes = [content];
+
+      try {
+        const insertManyResult = await collection.insertMany(recipes);
+        console.log(
+          `${insertManyResult.insertedCount} documents successfully inserted.\n`
+        );
+      } catch (err) {
+        console.error(
+          `Something went wrong trying to insert the new documents: ${err}\n`
+        );
+      }
+
+      await client.close();
     }
-
-    await client.close();
+    run().catch(console.dir);
+    // Acknowledge receipt
+    response.json({ received: true });
   }
-  run().catch(console.dir);
-
-  res.sendStatus(200); // Send a response to acknowledge receipt
-});
+);
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
