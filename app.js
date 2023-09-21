@@ -1,8 +1,11 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
-const password = process.env.MONGODBATLAS_PASSWORD;
 const app = express();
 const port = 3000;
+
+// mongoDB details
+require("dotenv").config();
+const { MongoClient } = require("mongodb");
+const password = process.env.MONGODBATLAS_PASSWORD;
 const bodyParser = require("body-parser");
 
 app.use(express.json());
@@ -19,8 +22,10 @@ app.post(
     console.log("Received callback:", request.body);
 
     async function run() {
-      const uri = `mongodb+srv://pyakhurelpasa:${password}@cluster0.dgcll78.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp`;
+      const uri =
+        `mongodb+srv://pyakhurelpasa:${password}@cluster0.dgcll78.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp`.toString();
 
+      console.log(uri);
       const client = new MongoClient(uri);
 
       await client.connect();
@@ -33,10 +38,10 @@ app.post(
       const database = client.db(dbName);
       const collection = database.collection(collectionName);
 
-      const recipes = [content];
+      const content = [response.body];
 
       try {
-        const insertManyResult = await collection.insertMany(recipes);
+        const insertManyResult = await collection.insertMany(content);
         console.log(
           `${insertManyResult.insertedCount} documents successfully inserted.\n`
         );
