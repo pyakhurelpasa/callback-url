@@ -20,6 +20,9 @@ app.post(
     console.log("Received callback:", request.body);
     try {
       console.log("STATUS", request.body.data.status);
+      if (request.body.data.status == "finished") {
+        console.log(request.body.data.frames);
+      }
     } catch (error) {}
 
     // Acknowledge receipt
