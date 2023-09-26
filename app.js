@@ -17,9 +17,9 @@ app.post(
 
     // content = JSON.parse(request.body);
     // Handle the incoming callback data here
-    console.log("Received callback:", request.body);
+    // console.log("Received callback:", request.body);
     try {
-      console.log("STATUS", request.body.data.status);
+      console.log("STATUS", request.body.toString());
       if (request.body.data.status == "finished") {
         console.log(request.body.data.frames);
       }
