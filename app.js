@@ -15,7 +15,7 @@ app.post(
   (request, response) => {
     let event;
 
-    content = JSON.parse(request.body);
+    // content = JSON.parse(request.body);
     // Handle the incoming callback data here
     console.log("Received callback:", request.body);
     try {
