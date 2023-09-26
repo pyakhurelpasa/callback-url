@@ -18,7 +18,9 @@ app.post(
     content = JSON.parse(request.body);
     // Handle the incoming callback data here
     console.log("Received callback:", request.body);
-    console.log("STATUS", request.body.data.status);
+    try {
+      console.log("STATUS", request.body.data.status);
+    } catch (error) {}
 
     run().catch(console.dir);
     // Acknowledge receipt
