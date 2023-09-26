@@ -22,7 +22,6 @@ app.post(
       console.log("STATUS", request.body.data.status);
     } catch (error) {}
 
-    run().catch(console.dir);
     // Acknowledge receipt
     response.json({ received: true });
   }
