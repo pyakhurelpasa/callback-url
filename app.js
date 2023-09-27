@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-// mongoDB details
+const ethers = require("ethers");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const contractABI = require("./CIDVerifier.json");
