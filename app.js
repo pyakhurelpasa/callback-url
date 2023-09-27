@@ -5,6 +5,15 @@ const port = 3000;
 // mongoDB details
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const contractABI = require("./CIDVerifier.json");
+const contractAddress = process.env.CID_VERFIER_CONRACT_ADDRESS;
+const privateKey = process.env.WALLET_ADDRESS;
+const provider = new ethers.WebSocketProvider(
+  "wss://wss.calibration.node.glif.io/apigw/lotus/rpc/v0"
+);
+const wallet = new ethers.Wallet(privateKey, provider);
+const contract = new ethers.Contract(contractAddress, contractABI, provider);
+const connectedContract = contract.connect(wallet);
 
 function uriToCID(url) {
   const matches = url.match(/\/([a-z0-9]+)\./i);
@@ -17,7 +26,7 @@ app.use(express.json());
 app.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
-  (request, response) => {
+  async (request, response) => {
     let event;
 
     try {
@@ -29,6 +38,9 @@ app.post(
         console.log("CID", cid);
 
         // Add request.body to Contract
+        // Call the verifyCID function
+        const tx = await connectedContract.verifyCID(cid, request.body);
+        await tx.wait();
       }
     } catch (error) {}
 
