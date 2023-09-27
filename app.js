@@ -20,6 +20,7 @@ app.post(
       if (request.body.data.status == "finished") {
         console.log("STATUS", request.body);
         // Filter CID from url
+        console.log(request.body.media.uri);
         const cid = uriToCID(request.body.media.uri);
         console.log("CID", cid);
 
