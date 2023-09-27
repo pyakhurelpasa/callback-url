@@ -5,7 +5,11 @@ const port = 3000;
 // mongoDB details
 require("dotenv").config();
 const bodyParser = require("body-parser");
-const { uriToCID } = require("./src/helpers/uriToCID");
+
+function uriToCID(url) {
+  const matches = url.match(/\/([a-z0-9]+)\./i);
+  return matches ? matches[1] : null;
+}
 
 app.use(express.json());
 
