@@ -1,211 +1,141 @@
-{
-  "compiler": {
-    "version": "0.8.18+commit.87f61d96"
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
-  "language": "Solidity",
-  "output": {
-    "abi": [
+  {
+    "anonymous": false,
+    "inputs": [
       {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": false,
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
-          }
-        ],
-        "name": "CIDUnverified",
-        "type": "event"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": true,
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
-          },
-          {
-            "indexed": false,
-            "internalType": "string",
-            "name": "verificationStatus",
-            "type": "string"
-          }
-        ],
-        "name": "CIDVerified",
-        "type": "event"
-      },
-      {
-        "anonymous": false,
-        "inputs": [
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "previousOwner",
-            "type": "address"
-          },
-          {
-            "indexed": true,
-            "internalType": "address",
-            "name": "newOwner",
-            "type": "address"
-          }
-        ],
-        "name": "OwnershipTransferred",
-        "type": "event"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
-          }
-        ],
-        "name": "handleUnverifiedCID",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "renounceOwnership",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "newOwner",
-            "type": "address"
-          }
-        ],
-        "name": "transferOwnership",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "string",
-            "name": "",
-            "type": "string"
-          }
-        ],
-        "name": "verifiedCIDs",
-        "outputs": [
-          {
-            "internalType": "string",
-            "name": "",
-            "type": "string"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "string",
-            "name": "cid",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "verificationStatus",
-            "type": "string"
-          }
-        ],
-        "name": "verifyCID",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "indexed": false,
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
       }
     ],
-    "devdoc": {
-      "kind": "dev",
-      "methods": {
-        "owner()": {
-          "details": "Returns the address of the current owner."
-        },
-        "renounceOwnership()": {
-          "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-        },
-        "transferOwnership(address)": {
-          "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
-        }
+    "name": "CIDUnverified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
       },
-      "version": 1
-    },
-    "userdoc": {
-      "kind": "user",
-      "methods": {},
-      "version": 1
-    }
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "verificationStatus",
+        "type": "string"
+      }
+    ],
+    "name": "CIDVerified",
+    "type": "event"
   },
-  "settings": {
-    "compilationTarget": {
-      "CIDVerification.sol": "CIDVerifier"
-    },
-    "evmVersion": "paris",
-    "libraries": {},
-    "metadata": {
-      "bytecodeHash": "ipfs"
-    },
-    "optimizer": {
-      "enabled": false,
-      "runs": 200
-    },
-    "remappings": []
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
-  "sources": {
-    "@openzeppelin/contracts/access/Ownable.sol": {
-      "keccak256": "0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32",
-        "dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"
-      ]
-    },
-    "@openzeppelin/contracts/utils/Context.sol": {
-      "keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
-        "dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
-      ]
-    },
-    "CIDVerification.sol": {
-      "keccak256": "0x54dffa113a77d64b9041d49dd05c41e3cbf810dc0d0bfea70f77917b4f3c2638",
-      "license": "MIT",
-      "urls": [
-        "bzz-raw://5294f3f824143cd2124c6554c511d4d3f660dae4aeec2b53841cd4783290fa92",
-        "dweb:/ipfs/QmXuiVrW8yJR6x1dXXaaqAXmvi8KVBfFcmva9w1XJGVNPL"
-      ]
-    }
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
+      }
+    ],
+    "name": "handleUnverifiedCID",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
-  "version": 1
-}
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "verifiedCIDs",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "verificationStatus",
+        "type": "string"
+      }
+    ],
+    "name": "verifyCID",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

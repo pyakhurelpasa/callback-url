@@ -6,15 +6,15 @@ const ethers = require("ethers");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const contractABI = require("./CIDVerifier.json");
-const contractAddress = process.env.CID_VERFIER_CONRACT_ADDRESS;
+const contractAddress = process.env.CID_VERFIER_CONRACT_ADDRESS.toString();
 const privateKey = process.env.WALLET_ADDRESS;
 const provider = new ethers.WebSocketProvider(
-  "wss://wss.calibration.node.glif.io/apigw/lotus/rpc/v0"
+  "wss://ws-filecoin-calibration.chainstacklabs.com/rpc/v1",
+  314159
 );
 const wallet = new ethers.Wallet(privateKey, provider);
-const abi = [contractABI];
-const contract = new ethers.Contract(contractAddress, abi, provider);
-const connectedContract = contract.connect(wallet);
+const contract = new ethers.Contract(contractAddress, contractABI, wallet);
+// const connectedContract = contract.connect(wallet);
 
 function uriToCID(url) {
   const matches = url.match(/\/([a-z0-9]+)\./i);
@@ -24,10 +24,14 @@ function uriToCID(url) {
 app.use(express.json());
 
 // Define a route for the callback URL
+
 app.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
   async (request, response) => {
+    // for local test only
+    // app.post("/process-data", async (request, response) => {
+
     let event;
 
     try {
@@ -38,12 +42,20 @@ app.post(
         const cid = uriToCID(request.body.media.uri);
         console.log("CID", cid);
 
+        console.log(wallet);
+        console.log(contract);
+        provider.getBlockNumber().then(console.log);
         // Add request.body to Contract
         // Call the verifyCID function
-        const tx = await connectedContract.verifyCID(cid, request.body);
+        const data = JSON.stringify(request.body);
+        const tx = await contract.verifyCID(cid, data);
+        // const tx = await contract.handleUnverifiedCID(cid);
+        console.log("TRANSACTION", tx);
         await tx.wait();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Error", error);
+    }
 
     // Acknowledge receipt
     response.json({ received: true });
