@@ -5,6 +5,7 @@ const port = 3000;
 // mongoDB details
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const { uriToCID } = require("./src/helpers/uriToCID");
 
 app.use(express.json());
 
@@ -19,6 +20,8 @@ app.post(
       if (request.body.data.status == "finished") {
         console.log("STATUS", request.body);
         // Filter CID from url
+        const cid = uriToCID(request.body.media.uri);
+        console.log("CID", cid);
 
         // Add request.body to Contract
       }
