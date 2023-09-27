@@ -12,7 +12,7 @@ const provider = new ethers.WebSocketProvider(
   "wss://wss.calibration.node.glif.io/apigw/lotus/rpc/v0"
 );
 const wallet = new ethers.Wallet(privateKey, provider);
-const contract = new ethers.Contract(contractAddress, contractABI, provider);
+const contract = new ethers.Contract(contractAddress, [contractABI], provider);
 const connectedContract = contract.connect(wallet);
 
 function uriToCID(url) {
