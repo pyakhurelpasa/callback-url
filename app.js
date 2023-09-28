@@ -1,64 +1,76 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-
 const ethers = require("ethers");
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const helmet = require("helmet"); // Import helmet middleware
 const contractABI = require("./CIDVerifier.json");
-const contractAddress = process.env.CID_VERFIER_CONRACT_ADDRESS.toString();
-const privateKey = process.env.WALLET_ADDRESS;
-const provider = new ethers.WebSocketProvider(
-  "wss://ws-filecoin-calibration.chainstacklabs.com/rpc/v1",
-  314159
-);
-const wallet = new ethers.Wallet(privateKey, provider);
-const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-// const connectedContract = contract.connect(wallet);
+const contractAddress = process.env.CID_VERFIER_CONTRACT_ADDRESS;
+const privateKey = process.env.WALLET_PRIVATE_KEY;
+const providerUrl = "wss://ws-filecoin-calibration.chainstacklabs.com/rpc/v1";
+const providerNetworkId = 314159;
 
+// Validate that required environment variables are set
+if (!contractAddress || !privateKey) {
+  console.error(
+    "Missing contract address or private key in environment variables."
+  );
+  process.exit(1);
+}
+
+// Validate and sanitize inputs
 function uriToCID(url) {
   const matches = url.match(/\/([a-z0-9]+)\./i);
   return matches ? matches[1] : null;
 }
 
+// Use helmet middleware to enhance security
+app.use(helmet());
+
 app.use(express.json());
 
 // Define a route for the callback URL
-
 app.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
   async (request, response) => {
-    // for local test only
-    // app.post("/process-data", async (request, response) => {
-
-    let event;
-
     try {
-      if (request.body.data.status == "finished") {
-        console.log("STATUS", request.body);
-        // Filter CID from url
-        console.log(request.body.media.uri);
+      if (request.body.data && request.body.data.status === "finished") {
         const cid = uriToCID(request.body.media.uri);
-        console.log("CID", cid);
 
-        console.log(wallet);
-        console.log(contract);
-        provider.getBlockNumber().then(console.log);
-        // Add request.body to Contract
-        // Call the verifyCID function
+        if (!cid) {
+          console.error("Invalid CID in the request.");
+          response.status(400).json({ error: "Invalid CID" });
+          return;
+        }
+
+        const provider = new ethers.providers.WebSocketProvider(
+          providerUrl,
+          providerNetworkId
+        );
+        const wallet = new ethers.Wallet(privateKey, provider);
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          wallet
+        );
+
         const data = JSON.stringify(request.body);
         const tx = await contract.verifyCID(cid, data);
-        // const tx = await contract.handleUnverifiedCID(cid);
-        console.log("TRANSACTION", tx);
+
+        console.log("Transaction Hash:", tx.hash);
         await tx.wait();
+
+        response.json({ received: true });
+      } else {
+        console.log("Ignoring request with status:", request.body.data.status);
+        response.json({ received: false });
       }
     } catch (error) {
-      console.log("Error", error);
+      console.error("Error:", error.message);
+      response.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Acknowledge receipt
-    response.json({ received: true });
   }
 );
 
