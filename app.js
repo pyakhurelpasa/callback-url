@@ -31,48 +31,51 @@ app.use(helmet());
 app.use(express.json());
 
 // Define a route for the callback URL
-app.post(
-  "/webhook",
-  bodyParser.raw({ type: "application/json" }),
-  async (request, response) => {
-    try {
-      if (request.body.data && request.body.data.status === "finished") {
-        const cid = uriToCID(request.body.media.uri);
+// app.post(
+//   "/webhook",
+//   bodyParser.raw({ type: "application/json" }),
+//   async (request, response) => {
 
-        if (!cid) {
-          console.error("Invalid CID in the request.");
-          response.status(400).json({ error: "Invalid CID" });
-          return;
-        }
+// Local route
+app.post("/process-data", async (request, response) => {
+  try {
+    if (request.body.data && request.body.data.status === "finished") {
+      const cid = uriToCID(request.body.media.uri);
 
-        const provider = new ethers.providers.WebSocketProvider(
-          providerUrl,
-          providerNetworkId
-        );
-        const wallet = new ethers.Wallet(privateKey, provider);
-        const contract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          wallet
-        );
-
-        const data = JSON.stringify(request.body);
-        const tx = await contract.verifyCID(cid, data);
-
-        console.log("Transaction Hash:", tx.hash);
-        await tx.wait();
-
-        response.json({ received: true });
-      } else {
-        console.log("Ignoring request with status:", request.body.data.status);
-        response.json({ received: false });
+      if (!cid) {
+        console.error("Invalid CID in the request.");
+        response.status(400).json({ error: "Invalid CID" });
+        return;
       }
-    } catch (error) {
-      console.error("Error:", error.message);
-      response.status(500).json({ error: "Internal Server Error" });
+
+      const provider = new ethers.WebSocketProvider(
+        providerUrl,
+        providerNetworkId
+      );
+
+      const wallet = new ethers.Wallet(privateKey, provider);
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        wallet
+      );
+
+      const data = JSON.stringify(request.body);
+      const tx = await contract.verifyCID(cid, data);
+
+      console.log("Transaction Hash:", tx.hash);
+      await tx.wait();
+
+      response.json({ received: true });
+    } else {
+      console.log("Ignoring request with status:", request.body.data.status);
+      response.json({ received: false });
     }
+  } catch (error) {
+    console.error("Error:", error.message);
+    response.status(500).json({ error: "Internal Server Error" });
   }
-);
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
