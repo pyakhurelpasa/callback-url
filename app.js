@@ -60,6 +60,15 @@ app.post(
         );
 
         const data = JSON.stringify(request.body);
+        // Estimate gas limit
+
+        // const gasPrice = (await provider.getFeeData()).gasPrice;
+        // const gasEstimation = await contract.verifyCID.estimateGas(cid, data);
+
+        // // Set gas limit to a slightly higher value than the estimation
+        // const gasLimit = gasPrice * gasEstimation;
+
+        // Build the transaction
         const tx = await contract.verifyCID(cid, data);
 
         console.log("Transaction Hash:", tx.hash);
